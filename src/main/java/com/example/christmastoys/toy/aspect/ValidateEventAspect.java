@@ -1,7 +1,7 @@
 package com.example.christmastoys.toy.aspect;
 
 
-import com.example.christmastoys.toy.ToyCreatedEvent;
+import com.example.christmastoys.toy.event.ToyCreatedEvent;
 import com.example.christmastoys.toy.exception.BannedToyException;
 import com.example.christmastoys.toy.exception.SkipException;
 import com.google.gson.Gson;
@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
-import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 @Aspect
@@ -23,13 +23,15 @@ import java.util.Objects;
 @Slf4j
 public class ValidateEventAspect {
     @Value("${banned-toy-list}")
-    private String[] bannedToyList;
+    private List<String> bannedToyList;
+
+    private final Gson gson = new Gson();
 
     @SneakyThrows
     @Around("@annotation(com.example.christmastoys.toy.annotation.ValidateToyCreatedEvent)")
-    public ToyCreatedEvent validateDeliveredEvent(ProceedingJoinPoint joinPoint) {
-        Gson gson = new Gson();
-        ToyCreatedEvent event = gson.fromJson((String) joinPoint.getArgs()[0], ToyCreatedEvent.class);
+    public ToyCreatedEvent validateToyCreatedEvent(ProceedingJoinPoint joinPoint) {
+        String incomingJson = (String) joinPoint.getArgs()[0];
+        ToyCreatedEvent event = gson.fromJson(incomingJson, ToyCreatedEvent.class);
 
         log.info("Validating ToyCreatedEvent: {}", event);
 
@@ -43,7 +45,7 @@ public class ValidateEventAspect {
             throw new SkipException("ToyCreatedEvent is skipping");
         }
 
-        if (Arrays.asList(bannedToyList).contains(event.getCategory())) {
+        if (bannedToyList.contains(event.getCategory())) {
             throw new BannedToyException(String.format("%s banned toy. Say child(id: %s) play more beautiful toy", event.getCategory(), event.getId()));
         }
 

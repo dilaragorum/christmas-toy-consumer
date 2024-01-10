@@ -1,6 +1,7 @@
 package com.example.christmastoys.toy.client.request;
 
 import com.example.christmastoys.toy.model.Toy;
+import com.example.christmastoys.toy.model.ToyDTO;
 import com.example.christmastoys.util.converter.JsonConverter;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateToyRequest {
-    Toy toy;
+    ToyDTO toy;
 
     @Override
     public String toString() {

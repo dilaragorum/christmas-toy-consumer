@@ -1,4 +1,4 @@
-package com.example.christmastoys.toy;
+package com.example.christmastoys.toy.event;
 
 import com.example.christmastoys.toy.model.Toy;
 import com.example.christmastoys.util.converter.JsonConverter;

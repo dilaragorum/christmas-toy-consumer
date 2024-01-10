@@ -3,8 +3,6 @@ package com.example.christmastoys.toy.model;
 
 import lombok.Data;
 
-import java.time.ZonedDateTime;
-
 
 @Data
 public class Toy {
@@ -14,8 +12,4 @@ public class Toy {
     String childName;
     String category;
     float weight;
-    String sizeType;
-    String message;
-    int durationDay;
-    String warehouse;
 }

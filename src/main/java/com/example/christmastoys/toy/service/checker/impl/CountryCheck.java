@@ -1,17 +1,19 @@
-package com.example.christmastoys.toy.service.selector.impl;
+package com.example.christmastoys.toy.service.checker.impl;
 
 import com.example.christmastoys.toy.exception.InvalidCountryException;
 import com.example.christmastoys.toy.model.GiftMessage;
 import com.example.christmastoys.toy.model.Toy;
-import com.example.christmastoys.toy.service.selector.Selector;
+import com.example.christmastoys.toy.model.ToyDTO;
+import com.example.christmastoys.toy.service.checker.Checker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
+import java.util.List;
 
+import static com.example.christmastoys.toy.model.converter.MapStructConverter.MAPPER;
 import static com.example.christmastoys.toy.service.rule.RegionRuleOrder.COUNTRY_SELECTOR;
 
 
@@ -19,27 +21,27 @@ import static com.example.christmastoys.toy.service.rule.RegionRuleOrder.COUNTRY
 @Component
 @RequiredArgsConstructor
 @Order(COUNTRY_SELECTOR)
-public class CountrySelector implements Selector {
+public class CountryCheck implements Checker {
 
     @Value("${country-list}")
-    private String[] countryList;
-
+    private List<String> countryList;
 
     @Override
-    public Toy check(Toy toy) {
-        if (!isEligibleCountry(toy.getCountry())) {
-            throw new InvalidCountryException(String.format("We have no service for %s", toy.getCountry()));
+    public ToyDTO process(ToyDTO toyDTO) {
+        String country = toyDTO.getCountry();
+
+        if (!isEligibleCountry(country)) {
+            throw new InvalidCountryException(String.format("We have no service for %s", toyDTO.getCountry()));
         }
 
-        String noteInGiftBox = getNoteInGiftBox(toy.getCountry());
-        toy.setMessage(noteInGiftBox);
+        toyDTO.setMessage(getNoteInGiftBox(country));
 
-        return toy;
+        return toyDTO;
 
     }
 
     public boolean isEligibleCountry(String country) {
-        return Arrays.asList(countryList).contains(country);
+        return countryList.contains(country);
     }
 
     public String getNoteInGiftBox(String country) {

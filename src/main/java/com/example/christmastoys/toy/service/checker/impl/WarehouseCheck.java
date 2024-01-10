@@ -1,27 +1,33 @@
-package com.example.christmastoys.toy.service.selector.impl;
+package com.example.christmastoys.toy.service.checker.impl;
 
 import com.example.christmastoys.toy.model.Toy;
+import com.example.christmastoys.toy.model.ToyDTO;
 import com.example.christmastoys.toy.model.Warehouse;
-import com.example.christmastoys.toy.service.selector.Selector;
+import com.example.christmastoys.toy.service.checker.Checker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+
+import static com.example.christmastoys.toy.model.converter.MapStructConverter.MAPPER;
 import static com.example.christmastoys.toy.service.rule.RegionRuleOrder.WAREHOUSE_SELECTOR;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 @Order(WAREHOUSE_SELECTOR)
-public class WarehouseSelector implements Selector {
+public class WarehouseCheck implements Checker {
     @Override
-    public Toy check(Toy toy) {
-        String warehouse = getWarehouse(toy.getCountry());
-        int durationDay = getDurationDay(warehouse, toy.getCountry());
-        toy.setWarehouse(warehouse);
-        toy.setDurationDay(durationDay);
+    public ToyDTO process(ToyDTO toyDTO) {
+        String country = toyDTO.getCountry();
 
-        return toy;
+        String warehouse = getWarehouse(country);
+        int durationDay = getDurationDay(warehouse, country);
+
+        toyDTO.setWarehouse(warehouse);
+        toyDTO.setDurationDay(durationDay);
+
+        return toyDTO;
     }
 
     private int getDurationDay(String warehouse, String country) {
