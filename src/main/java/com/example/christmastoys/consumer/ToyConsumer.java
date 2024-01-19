@@ -5,6 +5,7 @@ import com.example.christmastoys.annotation.ValidateToyCreatedEvent;
 import com.example.christmastoys.model.Toy;
 import com.example.christmastoys.service.ChristmasToyCheckService;
 import com.google.gson.Gson;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -24,7 +25,7 @@ public class ToyConsumer {
 
     @ValidateToyCreatedEvent
     @KafkaListener(topics = "${topic.name.consumer}", groupId = "${spring.kafka.consumer.group-id}")
-    public void ConsumeToyRequestCreate(@Payload String event, // TODO: bunu ToyCreatedEvent yapamıyorum, conversion hatası veriyor.
+    public void ConsumeToyRequestCreate(@Payload @Valid String event, // TODO: bunu ToyCreatedEvent yapamıyorum, conversion hatası veriyor.
                                         @Header(KafkaHeaders.RECEIVED_TOPIC) String topicName,
                                         @Header(KafkaHeaders.RECEIVED_PARTITION) int partition,
                                         @Header(KafkaHeaders.OFFSET) int offset) {
