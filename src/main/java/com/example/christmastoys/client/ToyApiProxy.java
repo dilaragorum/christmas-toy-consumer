@@ -7,7 +7,10 @@ import com.example.christmastoys.client.response.ToyApiResponse;
 import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.Objects;
 
 @Service
 
@@ -17,10 +20,10 @@ import org.springframework.stereotype.Service;
 public class ToyApiProxy {
     private final ToyApiClient toyApiClient;
 
-    public CreateToyResponse createToy(CreateToyRequest request) {
+    public void createToy(CreateToyRequest request) {
 
         log.info("ToyApi createToy request sending. Request: {}", request);
-        ToyApiResponse<CreateToyResponse> response;
+        ResponseEntity<ToyApiResponse<Void>> response;
         try {
             response = toyApiClient.createToy(request);
 
@@ -29,18 +32,11 @@ public class ToyApiProxy {
             throw new CreateToyException(e.getMessage());
         }
 
-        if (!response.isSuccess() || StringUtils.isNotBlank(response.getErrorMessage())) {
-            log.error("ToyApi createTracking service responded as error response. Error: {}", response.getErrorMessage());
-            throw new CreateToyException(response.getErrorMessage());
+        if (!Objects.requireNonNull(response.getBody()).isSuccess() || StringUtils.isNotBlank(response.getBody().getErrorMessage())) {
+            log.error("ToyApi createTracking service responded as error response. Error: {}", response.getBody().getErrorMessage());
+            throw new CreateToyException(response.getBody().getErrorMessage());
         }
 
-        if (response.getData() == null) {
-            log.error("TrackingApi createTracking service responded as null response.");
-            throw new CreateToyException("TrackingApi createTracking service responded as null response.");
-        }
-
-
-        log.info("TrackingApi createTracking responded successfully. Response: {}", response.getData());
-        return response.getData();
+        log.info("TrackingApi createTracking responded successfully. ");
     }
 }

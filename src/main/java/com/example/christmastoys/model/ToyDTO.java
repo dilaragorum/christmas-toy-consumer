@@ -13,8 +13,6 @@ public class ToyDTO {
     String sizeType;
     String message;
     int durationDay;
-
-
     String warehouse;
 
     public void setSizeType() {

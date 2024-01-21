@@ -12,7 +12,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateToyRequest {
-    ToyDTO toy;
+    String id;
+    String country;
+    String address;
+    String childName;
+    String category;
+    float weight;
+    String sizeType;
+    String message;
+    int durationDay;
+    String warehouse;
 
     @Override
     public String toString() {

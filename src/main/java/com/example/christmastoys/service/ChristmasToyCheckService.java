@@ -32,8 +32,9 @@ public class ChristmasToyCheckService {
             toyDTO = checker.process(toyDTO);
         }
 
-        CreateToyResponse toyRes = toyApiProxy.createToy(CreateToyRequest.builder().toy(toyDTO).build());
+        toyApiProxy.createToy(MAPPER.toyDTOtoCreateToyRequest(toyDTO));
 
-        log.info("Toy is successfully created : {}", toyRes.toString());
+        log.info("Toy is successfully created");
+
     }
 }
